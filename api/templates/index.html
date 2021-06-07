@@ -1,5 +1,9 @@
 <html>
 	<body>
-		<h1>Nothing</h1>
+		<h1>Data Sensing Network</h1>
+        <h3>RFID Scanned</h3>
+        {% for key, item  in rfid_data.items() %}
+            {{key}} : {{item}}</br>
+        {% endfor %}
 	</body>
 </html>
