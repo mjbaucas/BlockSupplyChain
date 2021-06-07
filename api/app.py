@@ -12,9 +12,9 @@ def display_page():
 
 @app.route('/send_rfid', methods=['POST'])
 def send_data():
-    response = request.get_json()
+	response = request.get_json()
 	print(response)
-    return "", 200
+	return "", 200
 
 if __name__=="__main__":
 	app.run(host='0.0.0.0', threaded=True, port=3000)
