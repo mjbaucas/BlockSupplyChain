@@ -22,7 +22,7 @@ try:
             print(text)
             timestamp = int(round(time.time() * 1000))
             data[counter] = [id, timestamp]
-            packet = {"credentials":{"userid": device_id, "password": passsword}, "data" = data}
+            packet = {"credentials":{"userid": device_id, "password": passsword}, "data": data}
             temp_value = requests.post(url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key' : ''})
         except Exception:
             pass
