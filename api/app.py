@@ -4,7 +4,7 @@ import time
 
 app = Flask(__name__)
 
-temp = {'dev1': 10, 'dev2': 14, 'dev3': 15, 'dev4': 24}
+temp = {}
 
 @app.route('/', methods=['GET'])
 def display_page():
@@ -14,6 +14,7 @@ def display_page():
 def send_data():
 	response = request.get_json()
 	print(response)
+	temp.update({"1": 123120321})
 	return "", 200
 
 if __name__=="__main__":
