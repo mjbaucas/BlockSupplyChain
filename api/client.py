@@ -1,0 +1,23 @@
+import requests
+import json
+import time
+import RPi.GPIO as GPIO
+from mfrc522 import SimpleMFRC522
+
+reader = SimpleMFRC522()
+
+url = 'http://10.11.252.136:3000/send'
+data = {}
+
+counter = 0
+for x in range(0,2):
+    try:
+        counter+=1
+        id, text = reader.read()
+        timestamp = int(round(time.time() * 1000))
+        data[counter] = id
+        x = requests.post(url, json=json.dumps(data), headers={'Content-Type': 'application/json', 'X-Api-Key' : ''})
+        print(text)
+    finally:
+        GPIO.cleanup()
+

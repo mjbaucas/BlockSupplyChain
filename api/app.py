@@ -13,6 +13,7 @@ def display_page():
 @app.route('/send_rfid', methods=['POST'])
 def send_data():
     response = request.get_json()
+	print(response)
     return "", 200
 
 if __name__=="__main__":
