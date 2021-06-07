@@ -6,7 +6,7 @@ from mfrc522 import SimpleMFRC522
 
 reader = SimpleMFRC522()
 
-url = 'http://10.11.252.136:3000/send_rfid'
+url = 'http://0.0.0.0:3000/send_rfid'
 data = {}
 
 counter = 0
