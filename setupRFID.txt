@@ -1,0 +1,26 @@
+=======================================
+Setup Raspbain for RFID RC522 chip
+=======================================
+type 'sudo raspi-config'
+select 'Interfacing Options'
+enable SPI
+type 'sudo reboot'
+type 'lsmod | gpio spi' to check if spi_bcm2835 is listed
+
+=======================================
+Getting MFRC522
+=======================================
+sudo apt-get install python3-dev python3-pip
+sudo pip3 install spidev
+sudo pip3 install mfrc522
+
+=======================================
+Wiring
+=======================================
+NSS  -> SPICEO
+SCK  -> SPISCLK
+MOSI -> SPMOSI
+MISO -> SPMISO 
+GND  -> GND
+RST  -> GPIO25
+VCC  -> 3V3
