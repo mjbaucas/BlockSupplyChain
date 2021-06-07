@@ -14,10 +14,11 @@ for i in range(0,2):
     try:
         counter+=1
         id, text = reader.read()
+        print(id)
+        print(text)
         timestamp = int(round(time.time() * 1000))
         data[counter] = id
         temp_value = requests.post(url, json=json.dumps(data), headers={'Content-Type': 'application/json', 'X-Api-Key' : ''})
-        print(text)
     finally:
         GPIO.cleanup()
 
