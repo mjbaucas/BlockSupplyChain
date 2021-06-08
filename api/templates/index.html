@@ -9,22 +9,33 @@
 	 </head>
 	<body>
 		<h1>Data Sensing Network</h1>
-		<h3>RFID Scanned</h3>
 		<table>
-			<tr>
-				<th> </th>
-				<th> RFID tag </th>
-				<th> Date</th>
-				<th> Time </th>
-			</tr>
-        {% for key, item  in rfid_data.items() %}
-			<tr>
-				<th> {{ key }} </th>
-				<td> {{ item[0] }} </td>
-				<td> {{ item[1] }} </td>
-				<td> {{ item[2] }} </td>				
-			</tr>
-		{% endfor %}
+			<td> 
+				<h3>RFID Scanned</h3>
+				<table>
+					<tr>
+						<th> </th>
+						<th> RFID tag </th>
+						<th> Date</th>
+						<th> Time </th>
+					</tr>
+				{% for key, item  in rfid_data.items() %}
+					<tr>
+						<th> {{ key }} </th>
+						<td> {{ item[0] }} </td>
+						<td> {{ item[1] }} </td>
+						<td> {{ item[2] }} </td>				
+					</tr>
+				{% endfor %}
+				</table>
+			</td>	
+			<td>
+				<h3>Temperature and Humidity</h3>
+				<table>
+				</table>
+			</td>
 		</table>
+
+		
 	</body>
 </html>

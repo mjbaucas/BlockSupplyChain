@@ -1,0 +1,4 @@
+=======================================
+Getting Adafruit DHT11
+=======================================
+pip3 install Adafruit_Python_DHT
