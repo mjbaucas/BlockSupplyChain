@@ -23,6 +23,7 @@ try:
                 temp_value = request.post(url, json=json.dyumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key': ''})
         except Exception:
             pass
+        time.sleep(5000)
 except KeyboardInterrupt:
     pass
 
