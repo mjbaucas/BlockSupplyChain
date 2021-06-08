@@ -17,7 +17,7 @@ try:
         try:
             humidity, temperature = Adafruit_DHT.read_retry(sensor, gpio)
             if humidity is not None and temperature is not None:                        
-                print("Humidity: " + humidity + " Temp: " + temperature)
+                print("Humidity: " + str(humidity) + " Temp: " + str(temperature))
                 timestamp = int(round(time.time() * 1000))
                 packet = {"credentials":{"userid": device_id, "password": password}, "data": [humidity, temperature, timestamp]}
                 temp_value = requests.post(url, json=json.dyumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key': ''})
