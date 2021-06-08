@@ -59,7 +59,7 @@ def send_th_data():
 	if all (k in ["credentials", "data"] for k in response) and len(response) == 2:
 		credentials = response["credentials"]
 		if check_user(credentials["userid"], credentials["password"]):
-			rfid_counter+=1
+			th_counter+=1
 			temp_th.update({rfid_counter: process_date(response["data"])})
 			return "", 200
 	return "", 500 

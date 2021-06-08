@@ -1,6 +1,7 @@
 import requests
 import json
 import time
+import sys
 import Adafruit_DHT
 
 sensor = Adafruit_DHT.DHT11
@@ -9,8 +10,7 @@ gpio = 24
 device_id = "test_temphumid_device_01"
 password = "password1234"
 
-url = 'http://0.0.0.0:3000/send/temphumid'
-data = {}
+url = 'http://' + sys.argv[1] + ':3000/send/temphumid'
 
 try:
     while True: 
@@ -24,7 +24,7 @@ try:
         except Exception as e:
             #print(e) # Uncomment for debugging  
             pass
-        time.sleep(5000)
+        time.sleep(5)
 except KeyboardInterrupt:
     pass
 
