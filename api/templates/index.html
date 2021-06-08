@@ -1,9 +1,30 @@
 <html>
+	<head>
+		<style>
+		   table, th, td {
+			  border: 1px solid black;
+			  padding: 10px;
+		   }
+		</style>
+	 </head>
 	<body>
 		<h1>Data Sensing Network</h1>
-        <h3>RFID Scanned</h3>
+		<h3>RFID Scanned</h3>
+		<table>
+			<tr>
+				<th> </th>
+				<th> RFID tag </th>
+				<th> Date</th>
+				<th> Time </th>
+			</tr>
         {% for key, item  in rfid_data.items() %}
-            {{key}} : {{item}}</br>
-        {% endfor %}
+			<tr>
+				<th> {{ key }} </th>
+				<td> {{ item[0] }} </td>
+				<td> {{ item[1] }} </td>
+				<td> {{ item[2] }} </td>				
+			</tr>
+		{% endfor %}
+		</table>
 	</body>
 </html>

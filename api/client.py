@@ -12,7 +12,6 @@ data = {}
 device_id = "test_rfid_device_01"
 password = "password1234"
 
-counter = 0
 try:
     while True:
         try:
@@ -21,8 +20,7 @@ try:
             print(id)
             print(text)
             timestamp = int(round(time.time() * 1000))
-            data[counter] = [id, timestamp]
-            packet = {"credentials":{"userid": device_id, "password": password}, "data": data}
+            packet = {"credentials":{"userid": device_id, "password": password}, "data": [id, timestamp]}
             temp_value = requests.post(url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key' : ''})
         except Exception:
             pass
