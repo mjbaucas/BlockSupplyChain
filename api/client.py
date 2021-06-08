@@ -15,7 +15,6 @@ password = "password1234"
 try:
     while True:
         try:
-            counter+=1
             id, text = reader.read()
             print(id)
             print(text)
