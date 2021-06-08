@@ -20,7 +20,7 @@ try:
                 print("Humidity: " + str(humidity) + " Temp: " + str(temperature))
                 timestamp = int(round(time.time() * 1000))
                 packet = {"credentials":{"userid": device_id, "password": password}, "data": [humidity, temperature, timestamp]}
-                temp_value = requests.post(url, json=json.dyumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key': ''})
+                temp_value = requests.post(url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key': ''})
         except Exception as e:
             #print(e) # Uncomment for debugging  
             pass
