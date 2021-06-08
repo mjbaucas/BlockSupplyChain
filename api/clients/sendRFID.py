@@ -21,7 +21,8 @@ try:
             timestamp = int(round(time.time() * 1000))
             packet = {"credentials":{"userid": device_id, "password": password}, "data": [id, timestamp]}
             temp_value = requests.post(url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key' : ''})
-        except Exception:
+        except Exception as e:
+            #print(e) # Uncomment for debugging  
             pass
 except KeyboardInterrupt:
     pass 
