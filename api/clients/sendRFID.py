@@ -1,6 +1,6 @@
 import requests
 import json
-import time
+from datetime import datetime
 import sys
 import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
@@ -18,7 +18,7 @@ try:
             id, text = reader.read()
             print(id)
             print(text)
-            timestamp = str(time.time())
+            timestamp = str(datetime.now().timestamp())
             packet = {"credentials":{"userid": device_id, "password": password}, "data": [id, timestamp]}
             temp_value = requests.post(url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key' : ''})
         except Exception as e:

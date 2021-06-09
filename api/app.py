@@ -74,7 +74,8 @@ def send_rfid_data():
 			data = RfidData()
 			data.device = credentials["userid"]
 			data.tag = str(response["data"][0])
-			data.timestamp = float(response["data"][1])
+			print(response["data"][1])
+			data.timestamp = response["data"][1]
 			data.save()
 			return "", 200
 	return "", 500
