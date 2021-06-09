@@ -1,6 +1,7 @@
 import requests
 import json
 from datetime import datetime
+import time
 import sys
 import Adafruit_DHT
 
@@ -18,7 +19,7 @@ try:
             humidity, temperature = Adafruit_DHT.read_retry(sensor, gpio)
             if humidity is not None and temperature is not None:                        
                 print("Humidity: " + str(humidity) + " Temp: " + str(temperature))
-                timestamp = str(datetime.now().timestamp())
+                timestamp = datetime.now().timestamp()
                 packet = {"credentials":{"userid": device_id, "password": password}, "data": {"humidity": humidity, "temperature": temperature, "timestamp": timestamp}}
                 temp_value = requests.post(url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key': ''})
         except Exception as e:
