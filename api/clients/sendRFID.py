@@ -15,11 +15,11 @@ url = 'http://' + sys.argv[1] + ':3000/send/rfid'
 try:
     while True:
         try:
-            id, text = reader.read()
+            tag, text = reader.read()
             print(id)
             print(text)
             timestamp = str(datetime.now().timestamp())
-            packet = {"credentials":{"userid": device_id, "password": password}, "data": [id, timestamp]}
+            packet = {"credentials":{"userid": device_id, "password": password}, "data": {"tag": tag, "timestamp": timestamp}}
             temp_value = requests.post(url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key' : ''})
         except Exception as e:
             #print(e) # Uncomment for debugging  

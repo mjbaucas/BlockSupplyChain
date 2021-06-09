@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, jsonify
+from datetime import datetime
 import json
 import time
 
 from database.db import initialize_db
-from database.models import RfidData
+from database.models import RfidData, TempHumidData
 
 from datetime import datetime, timezone
 from dateutil import tz 
@@ -14,12 +15,6 @@ app.config['MONGODB_SETTINGS'] = {
     'port': 27017
 }
 db = initialize_db(app)
-
-# Temporary data
-temp_rfid = {}
-rfid_counter = 0
-temp_th = {}
-th_counter = 0
 
 # Temporary ledger for credentials
 temp_ledger = {"test_rfid_device_01": "password1234", "test_temphumid_device_01": "password1234"}
@@ -34,15 +29,13 @@ def check_user(userid, password):
 		return True
 	return False
 
-def convert_utc_to_local(utc):
-	utc = datetime.fromtimestamp(utc/1000, tz=from_zone)
-	return utc.replace(tzinfo=from_zone).astimezone(to_zone).strftime("%Y-%m-%d %H:%M:%S")
-
-def process_date(items):
-	temp_date_list = convert_utc_to_local(items[-1]).split(" ")
-	items[-1] = temp_date_list[0]
-	items.append(temp_date_list[1])
-	return items
+def pretty_date(data):
+	temp_data = []
+	for item in data:
+		temp_split = item["timestamp"].split(',')
+		item["timestamp"] = f"{temp_split[0]}-{temp_split[1]}-{temp_split[2]} {temp_split[3]}:{temp_split[4]}:{temp_split[5]}.{temp_split[6]}"
+		temp_data.append(item)
+	return temp_data
 
 def shortlist(data, length):
 	temp = {}
@@ -55,32 +48,32 @@ def shortlist(data, length):
 
 @app.route('/', methods=['GET'])
 def display_page():
-	return render_template('index.html', rfid_data=temp_rfid, th_data=temp_th)
+	rfid = json.loads(RfidData.objects().order_by('-timestamp').limit(10).to_json())
+	rfid = pretty_date(rfid)
+	temp_humid = json.loads(TempHumidData.objects().order_by('-timestamp').limit(10).to_json())
+	temp_humid = pretty_date(temp_humid)
+	return render_template('index.html', rfid_data=rfid, th_data=temp_humid)
 
 @app.route('/rfid-data', methods=['GET'])
 def get_rfid_data():
-	data = json.loads(RfidData.objects().to_json())
+	data = json.loads(RfidData.objects().order_by('-timestamp').limit(10).to_json())
 	return jsonify(data)
 
 @app.route('/send/rfid', methods=['POST'])
 def send_rfid_data():
-	global rfid_counter
-	global temp_rfid
-
 	response = json.loads(request.get_json())
 	if all (k in ["credentials", "data"] for k in response) and len(response) == 2:
 		credentials = response["credentials"]
 		if check_user(credentials["userid"], credentials["password"]):
 			data = RfidData()
 			data.device = credentials["userid"]
-			data.tag = str(response["data"][0])
-			print(response["data"][1])
-			data.timestamp = response["data"][1]
+			data.tag = str(response["data"]["tag"])
+			data.timestamp = datetime.fromtimestamp(response["data"]["timestamp"])
 			data.save()
 			return "", 200
 	return "", 500
 
-@app.route('/send/temphumid', methods=['POST'])
+@app.route('/send/temp-humid', methods=['POST'])
 def send_th_data():
 	global th_counter
 	global temp_th
@@ -89,9 +82,11 @@ def send_th_data():
 	if all (k in ["credentials", "data"] for k in response) and len(response) == 2:
 		credentials = response["credentials"]
 		if check_user(credentials["userid"], credentials["password"]):
-			th_counter+=1
-			temp_th.update({rfid_counter: process_date(response["data"])})
-			temp_th = shortlist(temp_th ,20)
+			data = TempHumidData()
+			data.device = credentials["userid"]
+			data.temperature = response["data"]["temperature"]
+			data.humidity = response["data"]["humidity"]
+			data.timestamp = datetime.fromtimestamp(response["data"]["timestamp"])
 			return "", 200
 	return "", 500 
 
