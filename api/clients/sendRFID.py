@@ -18,7 +18,7 @@ try:
             id, text = reader.read()
             print(id)
             print(text)
-            timestamp = int(round(time.time() * 1000))
+            timestamp = str(time.time())
             packet = {"credentials":{"userid": device_id, "password": password}, "data": [id, timestamp]}
             temp_value = requests.post(url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key' : ''})
         except Exception as e:
