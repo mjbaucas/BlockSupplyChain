@@ -1,18 +1,8 @@
-import time
-import board
-import adafruit_adxl34x
-
-
-
-while True:
-
-
 import requests
 import json
 from datetime import datetime
 import time
 import sys
-import time
 import board
 import adafruit_adxl34x
 
