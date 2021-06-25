@@ -87,6 +87,7 @@ def send_th_data():
 			data.temperature = response["data"]["temperature"]
 			data.humidity = response["data"]["humidity"]
 			data.timestamp = datetime.fromtimestamp(response["data"]["timestamp"])
+			data.save()
 			return "", 200
 	return "", 500 
 
