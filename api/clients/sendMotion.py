@@ -11,7 +11,7 @@ PIR_PIN = 4
 GPIO.setup(PIR_PIN, GPIO.IN)
 
 
-device_id = "test_accel_device_01"
+device_id = "test_motion_device_01"
 password = "password1234"
 
 url = 'http://' + sys.argv[1] + ':3000/send/motion'

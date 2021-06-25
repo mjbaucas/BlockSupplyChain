@@ -46,6 +46,42 @@
 					{% endfor %}		
 				</table>
 			</td>
+			<td> 
+				<h3>Accelerometer</h3>
+				<table>
+					<tr>
+						<th> Device ID </th>
+						<th> X-axis </th>
+						<th> Y-axis </th>
+						<th> Z-axis </th>
+						<th> Timestamp </th>
+					</tr>
+					{% for item  in accel_data %}
+					<tr>
+						<th> {{ item['device'] }} </th>
+						<th> {{ '%0.3f' % item['x']|float }} </th>
+						<th> {{ '%0.3f' % item['y']|float }} </th>
+						<th> {{ '%0.3f' % item['z']|float }} </th>
+						<td> {{ item['timestamp'] }} </td>
+					</tr>
+					{% endfor %}
+				</table>
+			</td>
+			<td> 
+				<h3>Motion</h3>
+				<table>
+					<tr>
+						<th> Device ID </th>
+						<th> Timestamp </th>
+					</tr>
+					{% for item  in motion_data %}
+					<tr>
+						<th> {{ item['device'] }} </th>
+						<td> {{ item['timestamp'] }} </td>
+					</tr>
+					{% endfor %}
+				</table>
+			</td>
 		</table>
 
 		

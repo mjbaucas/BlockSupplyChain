@@ -17,3 +17,7 @@ class AccelData(db.Document):
     y = db.FloatField()
     z = db.FloatField()
     timestamp = db.ComplexDateTimeField()
+
+class MotionData(db.Document):
+    device = db.StringField(required=True)
+    timestamp = db.ComplexDateTimeField()

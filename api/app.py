@@ -4,7 +4,7 @@ import json
 import time
 
 from database.db import initialize_db
-from database.models import RfidData, TempHumidData, AccelData
+from database.models import RfidData, TempHumidData, AccelData, MotionData
 
 from datetime import datetime, timezone
 from dateutil import tz 
@@ -17,7 +17,7 @@ app.config['MONGODB_SETTINGS'] = {
 db = initialize_db(app)
 
 # Temporary ledger for credentials
-temp_ledger = {"test_rfid_device_01": "password1234", "test_temphumid_device_01": "password1234"}
+temp_ledger = {"test_rfid_device_01": "password1234", "test_temphumid_device_01": "password1234", "test_accel_device_01": "password1234", "test_motion_device_01": "password1234"}
 
 # Detect local time
 from_zone = tz.tzutc()
@@ -52,7 +52,11 @@ def display_page():
 	rfid = pretty_date(rfid)
 	temp_humid = json.loads(TempHumidData.objects().order_by('-timestamp').limit(10).to_json())
 	temp_humid = pretty_date(temp_humid)
-	return render_template('index.html', rfid_data=rfid, th_data=temp_humid)
+	motion= json.loads(MotionData.objects().order_by('-timestamp').limit(10).to_json())
+	motion = pretty_date(motion)
+	accel = json.loads(AccelData.objects().order_by('-timestamp').limit(10).to_json())
+	accel = pretty_date(accel)
+	return render_template('index.html', rfid_data=rfid, th_data=temp_humid, motion_data=motion, accel_data=accel)
 
 @app.route('/rfid-data', methods=['GET'])
 def get_rfid_data():
@@ -96,9 +100,22 @@ def send_accel_data():
 		if check_user(credentials["userid"], credentials["password"]):
 			data = AccelData()
 			data.device = credentials["userid"]
-			data.temperature = response["data"]["x"]
-			data.humidity = response["data"]["y"]
-			data.humidity = response["data"]["z"]
+			data.x = response["data"]["x"]
+			data.y = response["data"]["y"]
+			data.z = response["data"]["z"]
+			data.timestamp = datetime.fromtimestamp(response["data"]["timestamp"])
+			data.save()
+			return "", 200
+	return "", 500 
+
+@app.route('/send/motion', methods=['POST'])
+def send_motion_data():
+	response = json.loads(request.get_json())
+	if all (k in ["credentials", "data"] for k in response) and len(response) == 2:
+		credentials = response["credentials"]
+		if check_user(credentials["userid"], credentials["password"]):
+			data = MotionData()
+			data.device = credentials["userid"]
 			data.timestamp = datetime.fromtimestamp(response["data"]["timestamp"])
 			data.save()
 			return "", 200
