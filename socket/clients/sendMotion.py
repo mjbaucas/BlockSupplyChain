@@ -2,22 +2,21 @@ import sys
 import time
 import socket
 import os
+import RPi.GPIO as GPIO
 
-import Adafruit_DHT
-
-sensor = Adafruit_DHT.DHT11
-gpio = 24
+GPIO.setmode(GPIO.BCM)
+PIR_PIN = 4
+GPIO.setup(PIR_PIN, GPIO.IN)
 
 try:
     while True:
         try:
-            humidity, temperature = Adafruit_DHT.read_retry(sensor, gpio)
-            if humidity is not None and temperature is not None:      
+            if GPIO.input(PIR_PIN):
                 route = sys.argv[1]
                 start = time.time()
                 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 client.connect((route, 5000))
-                client.send(str.encode(str(humidity) + " " + str(temperature)))
+                client.send(str.encode('motion'))
                 print('time taken: ' + str((time.time()-start)*1000) + ' ms')
         except Exception as e:
             print(e)
@@ -27,4 +26,4 @@ except KeyboardInterrupt:
 
 client.shutdown(socket.SHUT_RDWR)
 client.close()
-
+GPIO.cleanup()
