@@ -22,6 +22,7 @@ try:
                 timestamp = datetime.now().timestamp()
                 packet = {"credentials":{"userid": device_id, "password": password}, "data": {"humidity": humidity, "temperature": temperature, "timestamp": timestamp}}
                 temp_value = requests.post(url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key': ''})
+                print('time taken: ' + str(temp_value.elapsed.total_seconds()))
         except Exception as e:
             #print(e) # Uncomment for debugging  
             pass
