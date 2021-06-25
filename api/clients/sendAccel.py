@@ -15,6 +15,9 @@ password = "password1234"
 
 url = 'http://' + sys.argv[1] + ':3000/send/accel'
 
+total = 0
+counter = 0
+
 try:
     while True: 
         try:
@@ -23,10 +26,14 @@ try:
             timestamp = datetime.now().timestamp()
             packet = {"credentials":{"userid": device_id, "password": password}, "data": {"x": axis_data[0], "y": axis_data[1], "z": axis_data[2], "timestamp": timestamp}}
             temp_value = requests.post(url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key': ''})
-            print('time taken: ' + str(temp_value.elapsed.total_seconds()))
+            elapsed = temp_value.elapsed.total_seconds()
+            total+= elapsed
+            counter+=1
+            print('time taken: ' + str(elapsed))
         except Exception as e:
             #print(e) # Uncomment for debugging  
             pass
         time.sleep(2)
 except KeyboardInterrupt:
+    print('average:' + str(float(total/counter)))
     pass
