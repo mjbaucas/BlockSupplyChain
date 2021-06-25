@@ -14,9 +14,11 @@ try:
             tag, text = reader.read()
             route = sys.argv[1]
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            start = time.time()
             client.connect((route, 5000))
-            print(tag)
             client.send(str.encode(str(tag)))
+            print('time taken ' + (time.time()-start)*1000 + ' ms')
+            print(tag)
         except Exception as e:
             print(e)
 except KeyboardInterrupt:
