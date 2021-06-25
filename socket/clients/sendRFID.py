@@ -15,7 +15,7 @@ try:
             route = sys.argv[1]
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             client.connect((route, 32500))
-            client.send(str.encode(tag))
+            client.send(tag)
             client.shutdown(socket.SHUT_RDWR)
             client.close()
             sent = True
