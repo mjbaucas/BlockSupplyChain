@@ -17,7 +17,7 @@ try:
             start = time.time()
             client.connect((route, 5000))
             client.send(str.encode(str(tag)))
-            print('time taken ' + (time.time()-start)*1000 + ' ms')
+            print('time taken: ' + str((time.time()-start)*1000) + ' ms')
             print(tag)
         except Exception as e:
             print(e)
