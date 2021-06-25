@@ -7,9 +7,9 @@ accelerometer = adafruit_adxl34x.ADXL345(i2c)
 
 while True:
     data = accelerometer.acceleration
-    print("X: " + data[0])
-    print("Y: " + data[1])
-    print("Z: " + data[2])
+    print("X: " + str(data[0]))
+    print("Y: " + str(data[1]))
+    print("Z: " + str(data[2]))
     time.sleep(5)
     
     
