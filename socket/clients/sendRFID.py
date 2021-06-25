@@ -14,16 +14,14 @@ try:
             tag, text = reader.read()
             route = sys.argv[1]
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client.connect((route, 32500))
+            client.connect((route, 80))
             client.send(str.encode(str(tag)))
-            client.shutdown(socket.SHUT_RDWR)
-            client.close()
-            sent = True
         except Exception as e:
             print(e)
 except KeyboardInterrupt:
     pass
 
+client.shutdown(socket.SHUT_RDWR)
 client.close()
 GPIO.cleanup()
 
