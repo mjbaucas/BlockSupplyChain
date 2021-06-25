@@ -4,7 +4,7 @@ import json
 import time
 
 from database.db import initialize_db
-from database.models import RfidData, TempHumidData
+from database.models import RfidData, TempHumidData, AccelData
 
 from datetime import datetime, timezone
 from dateutil import tz 
@@ -75,9 +75,6 @@ def send_rfid_data():
 
 @app.route('/send/temp-humid', methods=['POST'])
 def send_th_data():
-	global th_counter
-	global temp_th
-
 	response = json.loads(request.get_json())
 	if all (k in ["credentials", "data"] for k in response) and len(response) == 2:
 		credentials = response["credentials"]
@@ -86,6 +83,22 @@ def send_th_data():
 			data.device = credentials["userid"]
 			data.temperature = response["data"]["temperature"]
 			data.humidity = response["data"]["humidity"]
+			data.timestamp = datetime.fromtimestamp(response["data"]["timestamp"])
+			data.save()
+			return "", 200
+	return "", 500 
+
+@app.route('/send/accel', methods=['POST'])
+def send_accel_data():
+	response = json.loads(request.get_json())
+	if all (k in ["credentials", "data"] for k in response) and len(response) == 2:
+		credentials = response["credentials"]
+		if check_user(credentials["userid"], credentials["password"]):
+			data = AccelData()
+			data.device = credentials["userid"]
+			data.temperature = response["data"]["x"]
+			data.humidity = response["data"]["y"]
+			data.humidity = response["data"]["z"]
 			data.timestamp = datetime.fromtimestamp(response["data"]["timestamp"])
 			data.save()
 			return "", 200

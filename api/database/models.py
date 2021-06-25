@@ -10,3 +10,10 @@ class TempHumidData(db.Document):
     temperature = db.FloatField()
     humidity = db.FloatField()
     timestamp = db.ComplexDateTimeField()
+
+class AccelData(db.Document):
+    device = db.StringField(required=True)
+    x = db.FloatField()
+    y = db.FloatField()
+    z = db.FloatField()
+    timestamp = db.ComplexDateTimeField()
