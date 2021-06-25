@@ -14,7 +14,7 @@ try:
             tag, text = reader.read()
             route = sys.argv[1]
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client.connect((route, 80))
+            client.connect((route, 5000))
             print(tag)
             client.send(str.encode(str(tag)))
         except Exception as e:
