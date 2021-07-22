@@ -40,7 +40,7 @@ class PrivateBlockchainManager(object):
                         if transaction["action"] == 'add_user':
                             user_list.append(transaction)
                             
-        if next((item for item in user_list if item['user'] == 'rand' and item['password'] == self.__generate_hash(password)), None) is not None:
+        if next((item for item in user_list if item['user'] == user and item['password'] == self.__generate_hash(password)), None) is not None:
             return True
         return False
 
