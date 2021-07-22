@@ -33,6 +33,7 @@ try:
             counter+=1
             print('time taken: ' + str(elapsed))
             if time.time() > global_start + time_limit:
+                print('average:' + str(float(total/counter)))
                 break
         except Exception as e:
             #print(e) # Uncomment for debugging  
