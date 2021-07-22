@@ -23,20 +23,20 @@ class PrivateBlockchainManager(object):
         temp_list = self.blockchain
         user_list = []
         for index in range(len(temp_list)-1, 0, -1):
-            if temp_list[index]["current_level"] == temp_list[index-1]["current_level"] + 1:
-                if temp_list[index]["previous_hash"] == self.__generate_hash(self, temp_list[index-1], mode=None):
-                    transactions = temp_list[index]["transactions"]
+            if temp_list[index].current_level == temp_list[index-1].current_level + 1:
+                if temp_list[index].previous_hash == self.__generate_hash(temp_list[index-1]):
+                    transactions = temp_list[index].transactions
                     for transaction in transactions:
                         if transaction["action"] == 'add_user':
                             user_list.append(transaction)
                             
-        if next((item for item in user_list if item['user'] == 'rand' and item['password'] == self.__generate_hash(password)), None) is not None:
+        if next((item for item in user_list if item['user'] == user and item['password'] == self.__generate_hash(password)), None) is not None:
             return True
         return False
 
     def create_block(self, user, password):
         temp_transaction = {'action': 'add_user', 'user': user, 'password': self.__generate_hash(password)}
-        return PrivateBlock(temp_transaction, len(self.blockchain), self.__generate_hash(self.blockchain[-1]))
+        return PrivateBlock([temp_transaction], len(self.blockchain), self.__generate_hash(self.blockchain[-1]))
 
     def create_gen_block(self):
         return PrivateBlock([], len(self.blockchain), self.__generate_hash({}, 'dict'))
