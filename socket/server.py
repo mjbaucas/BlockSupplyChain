@@ -16,7 +16,7 @@ try:
             server.bind(("", 5000))
             server.listen(3)
             connection, address = server.accept()
-            packet = connection.recv(1024).decode()
+            packet = connection.recv(2048).decode()
             if priv_mngr.check_user(packet['user'], packet['password']):
                 counter['user']+=1
             print(packet)
@@ -26,5 +26,6 @@ except KeyboardInterrupt:
     server.shutdown(socket.SHUT_RDWR)
     connection.close()
     server.close()
+    print(str(counter))
     sys.exit()
 

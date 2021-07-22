@@ -12,11 +12,12 @@ class PrivateBlockchainManager(object):
         for key, value in temp_ledger.items():
             self.add_user(key, value, self.secret_pass)
 
-    def add_block(self, user, password):
-        if len(self.blockchain) == 0:
-            self.blockchain.append(self.create_gen_block())
-        priv_block = self.create_block(user, password)
-        self.blockchain.append(priv_block)
+    def add_user(self, user, password, secret):
+        if secret == self.secret_pass:
+            if len(self.blockchain) == 0:
+                self.blockchain.append(self.create_gen_block())
+            priv_block = self.create_block(user, password)
+            self.blockchain.append(priv_block)
 
     def check_user(self, user, password):
         temp_list = self.blockchain
@@ -35,7 +36,7 @@ class PrivateBlockchainManager(object):
 
     def create_block(self, user, password):
         temp_transaction = {'action': 'add_user', 'user': user, 'password': self.__generate_hash(password)}
-        return PrivateBlock(temp_transaction, len(self.blockchain), self.__generate_hash(self.blockchain[-1], 'dict'))
+        return PrivateBlock(temp_transaction, len(self.blockchain), self.__generate_hash(self.blockchain[-1]))
 
     def create_gen_block(self):
         return PrivateBlock([], len(self.blockchain), self.__generate_hash({}, 'dict'))
@@ -44,6 +45,6 @@ class PrivateBlockchainManager(object):
         hash = hashlib.md5()
         if mode == 'dict':
             input = json.dumps(input, sort_keys=True)
-        hash.update(input)
+        hash.update(str(input).encode())
         return hash.hexdigest()
 

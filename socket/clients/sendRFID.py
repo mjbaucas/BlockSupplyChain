@@ -35,7 +35,7 @@ try:
         except Exception as e:
             print(e)
         time.sleep(2)
-        if time.time() > global_start > 5:
+        if time.time() > global_start > 10:
             break
 except KeyboardInterrupt:
     print('average:' + str(float(total/counter)))
