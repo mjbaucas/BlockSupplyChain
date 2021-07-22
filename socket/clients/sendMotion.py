@@ -5,7 +5,6 @@ import socket
 import os
 import RPi.GPIO as GPIO
 import json
-from 
 
 GPIO.setmode(GPIO.BCM)
 PIR_PIN = 4
