@@ -15,6 +15,9 @@ password = "password1234"
 total = 0
 counter = 0
 
+global_start = time.time()
+time_period = 600
+
 try:
     while True:
         try:
@@ -32,6 +35,8 @@ try:
         except Exception as e:
             print(e)
         time.sleep(2)
+        if time.time() > global_start > 5:
+            break
 except KeyboardInterrupt:
     print('average:' + str(float(total/counter)))
     pass
