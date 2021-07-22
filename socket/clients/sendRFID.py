@@ -1,5 +1,6 @@
 import sys
 import time
+from datetime import datetime
 import socket
 import os
 import json
@@ -26,13 +27,15 @@ try:
             start = time.time()
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             client.connect((route, 5000))
-            temp_dict = {'user': device_id, 'password': password, 'data': tag}
+            timestamp = datetime.now().timestamp()
+            temp_dict = {'type': 'rfid', 'user': device_id, 'password': password, 'data': tag, 'timestamp': timestamp}
             client.send(str.encode(json.dumps(temp_dict)))
             elapsed = (time.time()-start)*1000
             total+= elapsed
             counter+=1
             print('time taken: ' + str(elapsed) + ' ms')
             if time.time() > global_start + time_limit:
+                print('average:' + str(float(total/counter)))
                 break
         except Exception as e:
             print(e)
