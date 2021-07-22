@@ -12,23 +12,30 @@ GPIO.setup(PIR_PIN, GPIO.IN)
 device_id = "test_motion_device_01"
 password = "password1234"
 
+global_start = time.time()
+time_limit = 600
+
 total = 0
 counter = 0
 
 try:
     while True:
         try:
-            if GPIO.input(PIR_PIN):
-                route = sys.argv[1]
-                start = time.time()
-                client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client.connect((route, 5000))
-                temp_dict = {'user': device_id, 'password': password, 'data':True}
-                client.send(str.encode(json.dumps(temp_dict)))
-                elapsed = (time.time()-start)*1000
-                total+= elapsed
-                counter+=1
-                print('time taken: ' + str(elapsed) + ' ms')
+            motion = 1 if GPIO.input(PIR_PIN) else 0
+            print(motion)
+            route = sys.argv[1]
+            start = time.time()
+            client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            client.connect((route, 5000))
+            temp_dict = {'user': device_id, 'password': password, 'data':motion}
+            client.send(str.encode(json.dumps(temp_dict)))
+            elapsed = (time.time()-start)*1000
+            total+= elapsed
+            counter+=1
+            print('time taken: ' + str(elapsed) + ' ms')
+            if time.time() > global_start + time_limit:
+                print('average:' + str(float(total/counter)))
+                break
         except Exception as e:
             print(e)
         time.sleep(2)
