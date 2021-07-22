@@ -4,10 +4,14 @@ import socket
 import os
 import board
 import adafruit_adxl34x
+import json
 
 
 i2c = board.I2C()
 accelerometer = adafruit_adxl34x.ADXL345(i2c)
+
+device_id = "test_accel_device_01"
+password = "password1234"
 
 total = 0
 counter = 0
@@ -20,7 +24,8 @@ try:
             start = time.time()
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             client.connect((route, 5000))
-            client.send(str.encode(str(axis_data[0]) + " " +  str(axis_data[1]) + " " + str(axis_data[2])))
+            temp_dict = {'user': device_id, 'password': password, 'data': {'x': axis_data[0], 'y': axis_data[1], 'z': axis_data[2]}}
+            client.send(str.encode(json.dumps(temp_dict)))
             elapsed = (time.time()-start)*1000
             total+= elapsed
             counter+=1

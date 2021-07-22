@@ -5,16 +5,14 @@ import time
 import sys
 import RPi.GPIO as GPIO
 
-
 GPIO.setmode(GPIO.BCM)
 PIR_PIN = 4
 GPIO.setup(PIR_PIN, GPIO.IN)
 
-
 device_id = "test_motion_device_01"
 password = "password1234"
 
-url = 'http://' + sys.argv[1] + ':3000/send/motion'
+url = 'http://' + sys.argv[1] + ':3000/motion-data/send'
 
 total = 0
 counter = 0

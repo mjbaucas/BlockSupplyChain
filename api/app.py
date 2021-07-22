@@ -4,7 +4,8 @@ import json
 import time
 
 from database.db import initialize_db
-from database.models import RfidData, TempHumidData, AccelData, MotionData
+from database.models import RfidData, TempHumidData, AccelData, MotionData, PrivateBlockData
+from database.managers import PrivateBlockchainManager
 
 from datetime import datetime, timezone
 from dateutil import tz 
@@ -15,20 +16,13 @@ app.config['MONGODB_SETTINGS'] = {
     'port': 27017
 }
 db = initialize_db(app)
-
-# Temporary ledger for credentials
-temp_ledger = {"test_rfid_device_01": "password1234", "test_temphumid_device_01": "password1234", "test_accel_device_01": "password1234", "test_motion_device_01": "password1234"}
+priv_db_mngr = PrivateBlockchainManager(PrivateBlockData)
 
 # Detect local time
 from_zone = tz.tzutc()
 to_zone = tz.tzlocal()
 
 # App utils
-def check_user(userid, password):
-	if userid in temp_ledger and temp_ledger[userid] == password:
-		return True
-	return False
-
 def pretty_date(data):
 	temp_data = []
 	for item in data:
@@ -63,12 +57,12 @@ def get_rfid_data():
 	data = json.loads(RfidData.objects().order_by('-timestamp').limit(10).to_json())
 	return jsonify(data)
 
-@app.route('/send/rfid', methods=['POST'])
+@app.route('/rfid-data/send', methods=['POST'])
 def send_rfid_data():
 	response = json.loads(request.get_json())
 	if all (k in ["credentials", "data"] for k in response) and len(response) == 2:
 		credentials = response["credentials"]
-		if check_user(credentials["userid"], credentials["password"]):
+		if priv_db_mngr.check_user(credentials["userid"], credentials["password"]):
 			data = RfidData()
 			data.device = credentials["userid"]
 			data.tag = str(response["data"]["tag"])
@@ -77,12 +71,12 @@ def send_rfid_data():
 			return "", 200
 	return "", 500
 
-@app.route('/send/temp-humid', methods=['POST'])
+@app.route('/temp-humid-data/send', methods=['POST'])
 def send_th_data():
 	response = json.loads(request.get_json())
 	if all (k in ["credentials", "data"] for k in response) and len(response) == 2:
 		credentials = response["credentials"]
-		if check_user(credentials["userid"], credentials["password"]):
+		if priv_db_mngr.check_user(credentials["userid"], credentials["password"]):
 			data = TempHumidData()
 			data.device = credentials["userid"]
 			data.temperature = response["data"]["temperature"]
@@ -92,12 +86,12 @@ def send_th_data():
 			return "", 200
 	return "", 500 
 
-@app.route('/send/accel', methods=['POST'])
+@app.route('/accel-data/send', methods=['POST'])
 def send_accel_data():
 	response = json.loads(request.get_json())
 	if all (k in ["credentials", "data"] for k in response) and len(response) == 2:
 		credentials = response["credentials"]
-		if check_user(credentials["userid"], credentials["password"]):
+		if priv_db_mngr.check_user(credentials["userid"], credentials["password"]):
 			data = AccelData()
 			data.device = credentials["userid"]
 			data.x = response["data"]["x"]
@@ -108,18 +102,29 @@ def send_accel_data():
 			return "", 200
 	return "", 500 
 
-@app.route('/send/motion', methods=['POST'])
+@app.route('/motion-data/send', methods=['POST'])
 def send_motion_data():
 	response = json.loads(request.get_json())
 	if all (k in ["credentials", "data"] for k in response) and len(response) == 2:
 		credentials = response["credentials"]
-		if check_user(credentials["userid"], credentials["password"]):
+		if priv_db_mngr.check_user(credentials["userid"], credentials["password"]):
 			data = MotionData()
 			data.device = credentials["userid"]
 			data.timestamp = datetime.fromtimestamp(response["data"]["timestamp"])
 			data.save()
 			return "", 200
 	return "", 500 
+
+@app.route('/user/add', methods=['POST'])
+def add_user():
+	response = json.loads(request.get_json())
+	if priv_db_mngr.add_user(response['user'], response['password'], response['secret']):
+		return "SUCCESS: User successfully created!", 200
+	return "FAILED: User already exists!", 500
+
+@app.route('/user', methods=['GET'])
+def print_users():
+	return jsonify(priv_db_mngr.get_users()), 200
 
 if __name__=="__main__":
 	app.run(host='0.0.0.0', threaded=True, port=3000)

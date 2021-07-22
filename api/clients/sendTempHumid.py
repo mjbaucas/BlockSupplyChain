@@ -11,7 +11,7 @@ gpio = 24
 device_id = "test_temphumid_device_01"
 password = "password1234"
 
-url = 'http://' + sys.argv[1] + ':3000/send/temp-humid'
+url = 'http://' + sys.argv[1] + ':3000/temp-humid-data/send'
 
 total = 0
 counter = 0

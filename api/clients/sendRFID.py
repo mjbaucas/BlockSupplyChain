@@ -11,7 +11,7 @@ reader = SimpleMFRC522()
 device_id = "test_rfid_device_01"
 password = "password1234"
 
-url = 'http://' + sys.argv[1] + ':3000/send/rfid'
+url = 'http://' + sys.argv[1] + ':3000/rfid-data/send'
 
 total = 0
 counter = 0

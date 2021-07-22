@@ -13,7 +13,7 @@ accelerometer = adafruit_adxl34x.ADXL345(i2c)
 device_id = "test_accel_device_01"
 password = "password1234"
 
-url = 'http://' + sys.argv[1] + ':3000/send/accel'
+url = 'http://' + sys.argv[1] + ':3000/accel-data/send'
 
 total = 0
 counter = 0

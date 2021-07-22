@@ -2,11 +2,15 @@ import sys
 import time
 import socket
 import os
+import json
 
 import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
 
 reader = SimpleMFRC522()
+
+device_id = "test_rfid_device_01"
+password = "password1234"
 
 total = 0
 counter = 0
@@ -19,7 +23,8 @@ try:
             start = time.time()
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             client.connect((route, 5000))
-            client.send(str.encode(str(tag)))
+            temp_dict = {'user': device_id, 'password': password, 'data': tag}
+            client.send(str.encode(json.dumps(temp_dict)))
             elapsed = (time.time()-start)*1000
             total+= elapsed
             counter+=1

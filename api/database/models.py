@@ -21,3 +21,11 @@ class AccelData(db.Document):
 class MotionData(db.Document):
     device = db.StringField(required=True)
     timestamp = db.ComplexDateTimeField()
+
+class PrivateBlockData(db.Document):
+    previous_hash = db.StringField(required=True, unique=True)
+    timestamp = db.ComplexDateTimeField(required=True)
+    nonce = db.IntField(required=True)
+    transactions = db.ListField(field=db.StringField())
+    current_level = db.IntField(required=True)
+    
