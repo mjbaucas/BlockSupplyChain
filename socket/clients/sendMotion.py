@@ -1,9 +1,11 @@
 import sys
 import time
+from datetime import datetime
 import socket
 import os
 import RPi.GPIO as GPIO
 import json
+from 
 
 GPIO.setmode(GPIO.BCM)
 PIR_PIN = 4
@@ -27,7 +29,8 @@ try:
             start = time.time()
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             client.connect((route, 5000))
-            temp_dict = {'user': device_id, 'password': password, 'data':motion}
+            timestamp = datetime.now().timestamp()
+            temp_dict = {'type': 'motion', 'user': device_id, 'password': password, 'data':motion, 'timestamp': timestamp}
             client.send(str.encode(json.dumps(temp_dict)))
             elapsed = (time.time()-start)*1000
             total+= elapsed

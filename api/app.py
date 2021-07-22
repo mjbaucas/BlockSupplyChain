@@ -110,6 +110,7 @@ def send_motion_data():
 		if priv_db_mngr.check_user(credentials["userid"], credentials["password"]):
 			data = MotionData()
 			data.device = credentials["userid"]
+			data.motion = response["data"]["motion"]
 			data.timestamp = datetime.fromtimestamp(response["data"]["timestamp"])
 			data.save()
 			return "", 200

@@ -1,5 +1,6 @@
 import sys
 import time
+from datetime import datetime
 import socket
 import os
 import json
@@ -27,7 +28,8 @@ try:
                 start = time.time()
                 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 client.connect((route, 5000))
-                temp_dict = {'user': device_id, 'password': password, 'data': {'temperature': temperature, 'humidity': humidity}}
+                timestamp = datetime.now().timestamp()
+                temp_dict = {'type': 'temp-humid', 'user': device_id, 'password': password, 'data': {'temperature': temperature, 'humidity': humidity}, 'timestamp': timestamp}
                 client.send(str.encode(json.dumps(temp_dict)))
                 elapsed = (time.time()-start)*1000
                 total+= elapsed

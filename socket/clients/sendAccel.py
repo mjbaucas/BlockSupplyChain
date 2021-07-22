@@ -1,5 +1,6 @@
 import sys
 import time
+from datetime import datetime
 import socket
 import os
 import board
@@ -27,7 +28,8 @@ try:
             start = time.time()
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             client.connect((route, 5000))
-            temp_dict = {'user': device_id, 'password': password, 'data': {'x': axis_data[0], 'y': axis_data[1], 'z': axis_data[2]}}
+            timestamp = datetime.now().timestamp()
+            temp_dict = {'type': 'accel', 'user': device_id, 'password': password, 'data': {'x': axis_data[0], 'y': axis_data[1], 'z': axis_data[2]}, 'timestamp': timestamp}
             client.send(str.encode(json.dumps(temp_dict)))
             elapsed = (time.time()-start)*1000
             total+= elapsed

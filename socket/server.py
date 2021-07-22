@@ -7,11 +7,12 @@ import inspect
 import json
 import mongoengine
 
+# path changes here
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
-from api.database.models import RfidData, PrivateBlockData
+from api.database.models import RfidData, PrivateBlockData, TempHumidData, AccelData, MotionData
 from api.database.managers import PrivateBlockchainManager
 
 counter = {"test_rfid_device_01": 0, "test_temphumid_device_01": 0, "test_accel_device_01": 0, "test_motion_device_01": 0}
@@ -34,6 +35,27 @@ try:
                     data = RfidData()
                     data.device = packet["user"]
                     data.tag = str(packet["data"])
+                    data.timestamp = datetime.fromtimestamp(packet["timestamp"])
+                    data.save()
+                elif packet['type'] == 'temp-humid':
+                    data = TempHumidData()
+                    data.device = packet["user"]
+                    data.temperature = packet["data"]["temperature"]
+                    data.humidity = packet["data"]["humidity"]
+                    data.timestamp = datetime.fromtimestamp(packet["timestamp"])
+                    data.save()
+                elif packet['type'] == 'accel':
+                    data = AccelData()
+                    data.device = packet["user"]
+                    data.x = packet["data"]["x"]
+                    data.y = packet["data"]["y"]
+                    data.z = packet["data"]["z"]
+                    data.timestamp = datetime.fromtimestamp(packet["timestamp"])
+                    data.save()
+                elif packet['type'] == 'motion':
+                    data = MotionData()
+                    data.device = packet["user"]
+                    data.motion = packet["data"]
                     data.timestamp = datetime.fromtimestamp(packet["timestamp"])
                     data.save()
                 counter[packet['user']]+=1

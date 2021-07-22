@@ -20,6 +20,7 @@ class AccelData(db.Document):
 
 class MotionData(db.Document):
     device = db.StringField(required=True)
+    motion = db.IntField()
     timestamp = db.ComplexDateTimeField()
 
 class PrivateBlockData(db.Document):
