@@ -11,6 +11,9 @@ gpio = 24
 device_id = "test_temphumid_device_01"
 password = "password1234"
 
+global_start = time.time()
+time_limit = 600
+
 url = 'http://' + sys.argv[1] + ':3000/temp-humid-data/send'
 
 total = 0
@@ -29,6 +32,9 @@ try:
                 total+= elapsed
                 counter+=1
                 print('time taken: ' + str(elapsed))
+                if time.time() > global_start + time_limit:
+                    print('average:' + str(float(total/counter)))
+                    break
         except Exception as e:
             #print(e) # Uncomment for debugging  
             pass
