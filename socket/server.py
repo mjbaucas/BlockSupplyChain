@@ -2,6 +2,11 @@ import time
 import socket
 import os
 import sys
+from managers import PrivateBlockchainManager
+
+counter = {"test_rfid_device_01": 0, "test_temphumid_device_01": 0, "test_accel_device_01": 0, "test_motion_device_01": 0}
+
+priv_mngr = PrivateBlockchainManager()
 
 try:
     while True:
@@ -12,6 +17,8 @@ try:
             server.listen(3)
             connection, address = server.accept()
             packet = connection.recv(1024).decode()
+            if priv_mngr.check_user(packet['user'], packet['password']):
+                counter['user']+=1
             print(packet)
         except Exception as e:
             print(e)
