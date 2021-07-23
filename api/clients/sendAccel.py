@@ -39,7 +39,7 @@ try:
         except Exception as e:
             #print(e) # Uncomment for debugging  
             pass
-        time.sleep(2)
+        #time.sleep(2)
 except KeyboardInterrupt:
     print('average:' + str(float(total/counter)))
     pass
