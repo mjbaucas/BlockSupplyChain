@@ -13,7 +13,7 @@ device_id = "test_motion_device_01"
 password = "password1234"
 
 global_start = time.time()
-time_limit = 600
+time_limit = 300
 
 url = 'http://' + sys.argv[1] + ':3000/motion-data/send'
 

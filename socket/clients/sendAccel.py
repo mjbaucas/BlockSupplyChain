@@ -15,7 +15,7 @@ device_id = "test_accel_device_01"
 password = "password1234"
 
 global_start = time.time()
-time_limit = 600
+time_limit = 300
 
 total = 0
 counter = 0
