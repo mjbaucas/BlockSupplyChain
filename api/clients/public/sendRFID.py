@@ -30,8 +30,8 @@ while blockchain_key is None and not enabled:
     packet = {"userid": device_id}
     temp_value = requests.post(register_participant_url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key' : ''})
     if temp_value.status_code == 200:
-        print(temp_value.json())
-        #blockchain_key = temp_value.json["hashed_key"]
+        
+        blockchain_key = temp_value.json()["hashed_key"]
         enabled = True
 
 try:
@@ -42,13 +42,13 @@ try:
             packet = {"credentials":{"userid": blockchain_key}, "data": {"tag": tag, "timestamp": timestamp}}
             temp_value = requests.post(send_data_url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key' : ''})
             if temp_value.status_code == 200 and temp_value.json() is not None and "block" in temp_value.json():
-                block = temp_value.json["block"]
+                block = temp_value.json()["block"]
                 computed_hash = self.compute_hash(block)
                 while not computed_hash.startswith('0' * self.difficulty):
                     block["nonce"] += 1
                     computed_hash = self.compute_hash(block)
                 packet = {"credentials":{"userid": device_id}, "data": {"proof_of_work": computed_hash, "block_id": block["_id"]["$oid"]}}
-                temp_value = requests.post(proof_of_work_url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key' : ''})
+                temp_value_2 = requests.post(proof_of_work_url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key' : ''})
             elapsed = temp_value.elapsed.total_seconds()
             total+= elapsed
             counter+=1
