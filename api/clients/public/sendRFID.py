@@ -48,7 +48,7 @@ try:
             temp_value = requests.post(send_data_url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key' : ''})
             if temp_value.status_code == 200:
                 block = temp_value.json()["block"]
-                print(temp_value)
+                print(temp_value.json())
                 computed_hash = self.compute_hash(block)
                 while not computed_hash.startswith('0' * temp_value.json()["difficulty"]):
                     block["nonce"] += 1
