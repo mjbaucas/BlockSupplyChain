@@ -2,6 +2,8 @@ from datetime import datetime
 import hashlib
 import json
 
+from database.models import RfidData, TempHumidData, AccelData, MotionData, PublicBlockData, PendingPublicBlockData
+
 # Initial ledger for credentials
 temp_ledger = {"test_rfid_device_01": "password1234", "test_temphumid_device_01": "password1234", "test_accel_device_01": "password1234", "test_motion_device_01": "password1234"}
 
@@ -180,20 +182,22 @@ class PublicBlockchainManager(object):
 
     def add_block_to_chain(self):
         temp = self.check_status(1)
-        if temp is not None and temp["locked"] == False:
+        if temp is not None and temp["locked"] == False and temp["votes"] >= self.count_participants()/2:
             block = self.pending_db.objects.get(id = temp["_id"]["$oid"])
             block.locked = True
             block.save()
+            block.delete()
+        
+            temp_db = self.public_db()
+            temp_db.previous_hash =  temp["previous_hash"]
+            temp_db.timestamp =  temp["timestamp"]
+            temp_db.nonce = temp["nonce"]
+            temp_db.transactions = temp["transactions"]
+            temp_db.current_level =  temp["current_level"]
+            temp_db.save()
 
-            if temp["votes"] >= self.count_participants()/2:  
-                temp_db = self.public_db()
-                temp_db.previous_hash =  temp["previous_hash"]
-                temp_db.timestamp =  temp["timestamp"]
-                temp_db.nonce = temp["nonce"]
-                temp_db.transactions = temp["transactions"]
-                temp_db.current_level =  temp["current_level"]
-                temp_db.save()
-                block.delete()
+            for item in temp["transactions"]:
+                self.add_data_to_database(item)
 
     def __generate_hash(self, input, mode=None):
         hash = hashlib.md5()
@@ -225,24 +229,31 @@ class PublicBlockchainManager(object):
         return computed_hash
 
     def verify_proof_of_work(self, id, proof):
-        return proof == self.generate_proof_of_work(id)
+        try: 
+            self.pending_db.objects.get(id = id)
+            return proof == self.generate_proof_of_work(id)
+        except Exception as e:
+            return False
     
     def compute_hash(self, block):
         block_string = json.dumps(block, indent=4, sort_keys=True, default=str)
         return hashlib.sha256(block_string.encode()).hexdigest()
 
     def pending_model_to_dict(self, id):
-        block = self.pending_db.objects.get(id = id)
-        if block is not None:
-            temp_block = {}
-            temp_block["previous_hash"] = block["previous_hash"]
-            temp_block["timestamp"] = block["timestamp"]
-            temp_block["nonce"] = block["nonce"]
-            temp_block["transactions"] = block["transactions"]
-            temp_block["current_level"] = block["current_level"]
-            temp_block = json.loads(json.dumps(temp_block, default=str))
-            return temp_block
-        return None
+        try:
+            block = self.pending_db.objects.get(id = id)
+            if block is not None:
+                temp_block = {}
+                temp_block["previous_hash"] = block["previous_hash"]
+                temp_block["timestamp"] = block["timestamp"]
+                temp_block["nonce"] = block["nonce"]
+                temp_block["transactions"] = block["transactions"]
+                temp_block["current_level"] = block["current_level"]
+                temp_block = json.loads(json.dumps(temp_block, default=str))
+                return temp_block
+            return None
+        except Exception as e:
+            return None
     
     def get_full_block(self):
         block = self.__check_status(1)
@@ -256,3 +267,33 @@ class PublicBlockchainManager(object):
         if block is not None:
             block.votes += 1
             block.save()
+
+    def add_data_to_database(self, transaction):
+        transaction = json.loads(transaction)
+        if transaction["action"] == "add_rfid_data":
+            data = RfidData()
+            data.device = transaction["data"]["device"]
+            data.tag = str(transaction["data"]["tag"])
+            data.timestamp = datetime.fromtimestamp(transaction["data"]["timestamp"])
+            data.save()
+        elif transaction["action"] == "add_temp_humid_data":
+            data = TempHumidData()
+            data.device = transaction["data"]["device"]
+            data.temperature = transaction["data"]["temperature"]
+            data.humidity = transaction["data"]["humidity"]
+            data.timestamp = datetime.fromtimestamp(transaction["data"]["timestamp"])
+            data.save()
+        elif transaction["action"] == "add_accel_data":
+            data = AccelData()
+            data.device = transaction["data"]["device"]
+            data.x = transaction["data"]["x"]
+            data.y = transaction["data"]["y"]
+            data.z = transaction["data"]["z"]
+            data.timestamp = datetime.fromtimestamp(transaction["data"]["timestamp"])
+            data.save()
+        elif transaction["action"] == "add_motion_data":
+            data = MotionData()
+            data.device = transaction["data]"]["device"]
+            data.motion = transaction["data"]["motion"]
+            data.timestamp = datetime.fromtimestamp(transaction["data"]["timestamp"])
+            data.save()

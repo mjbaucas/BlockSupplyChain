@@ -5,7 +5,7 @@ from datetime import datetime
 from database.models import RfidData, TempHumidData, AccelData, MotionData, PublicBlockData, PendingPublicBlockData
 from database.managers import PublicBlockchainManager
 
-pub_db_mngr = PublicBlockchainManager(PublicBlockData, PendingPublicBlockData, 3, 4)
+pub_db_mngr = PublicBlockchainManager(PublicBlockData, PendingPublicBlockData, 3, 10)
 public = Blueprint("public", __name__)
 
 @public.route('/rfid-data/send', methods=['POST'])
