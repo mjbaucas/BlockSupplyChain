@@ -49,6 +49,7 @@ try:
             if temp_value.status_code == 200:
                 data = temp_value.json()
                 block = data["block"]
+                print(block)
                 computed_hash = compute_hash(block)
                 while not computed_hash.startswith('0' * data["difficulty"]):
                     block["nonce"] += 1

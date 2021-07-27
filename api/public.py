@@ -87,9 +87,10 @@ def recieve_proof():
 	if all (k in ["credentials", "data"] for k in response) and len(response) == 2:
 		credentials = response["credentials"]
 		if pub_db_mngr.check_participant(credentials["userid"]):
-			if pub_db_mngr.verify_proof_of_work(response["data"]["block_id"], response["data"]["proof"]):
+			if pub_db_mngr.verify_proof_of_work(response["data"]["block_id"], response["data"]["proof_of_work"]):
 				pub_db_mngr.vote_to_add_block(id = response["data"]["block_id"])
-			return "", 200
+				return "", 200
+			return "", 400
 		return "", 300
 	return "", 500
 

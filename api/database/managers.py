@@ -218,6 +218,7 @@ class PublicBlockchainManager(object):
 
     def generate_proof_of_work(self, id):
         block = self.pending_model_to_dict(id)
+        print(block)
         computed_hash = self.compute_hash(block)
         while not computed_hash.startswith('0' * self.difficulty):
             block["nonce"] += 1
@@ -225,11 +226,7 @@ class PublicBlockchainManager(object):
         return computed_hash
 
     def verify_proof_of_work(self, id, proof):
-        block = self.pending_model_to_dict(id)
-        if block is not None:
-            return (proof.startswith('0' * self.difficulty) and proof == self.compute_hash(block))
-        else:
-            return False
+        return proof == self.generate_proof_of_work(id)
     
     def compute_hash(self, block):
         block_string = json.dumps(block, indent=4, sort_keys=True, default=str)
