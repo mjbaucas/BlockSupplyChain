@@ -100,7 +100,7 @@ class PublicBlockchainManager(object):
                     if transaction["action"] == 'register_participant':
                         user_list.append(transaction)
                             
-        if next((item for item in user_list if item['data']['userid'] == participant), None) is not None:
+        if next((item for item in user_list if item['data']['key'] == participant), None) is not None:
             return True
         return False
     
@@ -115,6 +115,18 @@ class PublicBlockchainManager(object):
                     if transaction["action"] == 'register_participant':
                         counter+=1
         return counter
+
+    def search_participant(self, userid):
+        temp_list = self.get_public_blocks()
+        counter = 0
+        for index in range(0, len(temp_list)-1):
+            if temp_list[index]["current_level"] == temp_list[index+1]["current_level"] + 1:
+                transactions = temp_list[index]["transactions"]
+                for transaction in transactions:
+                    transaction = json.loads(transaction)
+                    if transaction["action"] == 'register_participant':
+                        return transaction["data"]["key"]
+        return None 
 
     def create_transaction(self, action, data):
         return {"action": action, "data": data, "timestamp": datetime.now().timestamp()}
@@ -143,9 +155,11 @@ class PublicBlockchainManager(object):
 
     def add_participant(self, participant):
         try:
-            key = self.__generate_hash(participant + str(datetime.now().timestamp()))
-            transaction = self.create_transaction("register_participant", {"userid": key})
-            self.create_block([json.dumps(transaction)])
+            key = self.search_participant(participant)
+            if key is None:
+                key = self.__generate_hash(participant + str(datetime.now().timestamp()))
+                transaction = self.create_transaction("register_participant", {"userid": participant, "key": key})
+                self.create_block([json.dumps(transaction)])
             return key 
         except Exception as e:
             print(e)
@@ -171,8 +185,8 @@ class PublicBlockchainManager(object):
             block.locked = True
             block.save()
             block.delete()
-
-            if temp["votes"] >= self.count_participants/2:
+            
+            if temp["votes"] >= self.count_participants()/2:
                 temp_db = self.public_db()
                 temp_db.previous_hash =  temp["previous_hash"]
                 temp_db.timestamp =  temp["timestamp"]

@@ -15,13 +15,13 @@ def send_rfid_data():
 		credentials = response["credentials"]
 		if pub_db_mngr.check_participant(credentials["userid"]):
 			pub_db_mngr.add_data_transaction({"device": credentials["userid"], "tag": str(response["data"]["tag"]), "timestamp": response["data"]["timestamp"]}, "rfid")
-			block = self.check_status(1)
+			block = pub_db_mngr.check_status(1)
 			if block is not None:
-				block = pending_model_to_dict(block["_id"]["$oid"])
-				self.add_block_to_chain()
+				block = pub_db_mngr.pending_model_to_dict(block["_id"]["$oid"])
+				pub_db_mngr.add_block_to_chain()
 				return jsonify({"block": block}), 200
 			else:
-				return "", 500
+				return "", 300
 	return "", 500
 
 @public.route('/temp-humid-data/send', methods=['POST'])
@@ -31,10 +31,10 @@ def send_th_data():
 		credentials = response["credentials"]
 		if pub_db_mngr.check_participant(credentials["userid"]):
 			pub_db_mngr.add_data_transaction({"device": credentials["userid"], "temperature": response["data"]["temperature"], "humidity": response["data"]["humidity"], "timestamp": response["data"]["timestamp"]}, "temp_humid")
-			block = self.check_status(1)
+			block = pub_db_mngr.check_status(1)
 			if block is not None:
-				block = pending_model_to_dict(block["_id"]["$oid"])
-				self.add_block_to_chain()
+				block = pub_db_mngr.pending_model_to_dict(block["_id"]["$oid"])
+				pub_db_mngr.add_block_to_chain()
 				return jsonify({"block": block, "difficulty": pub_db_mngr.difficulty}), 200
 			else:
 				return "", 500
@@ -47,10 +47,10 @@ def send_accel_data():
 		credentials = response["credentials"]
 		if pub_db_mngr.check_participant(credentials["userid"]):
 			pub_db_mngr.add_data_transaction({"device": credentials["userid"], "x": response["data"]["x"], "y": response["data"]["y"], "z": response["data"]["z"], "timestamp": response["data"]["timestamp"]}, "accel")
-			block = self.check_status(1)
+			block = pub_db_mngr.check_status(1)
 			if block is not None:
-				block = pending_model_to_dict(block["_id"]["$oid"])
-				self.add_block_to_chain()
+				block = pub_db_mngr.pending_model_to_dict(block["_id"]["$oid"])
+				pub_db_mngr.add_block_to_chain()
 				return jsonify({"block": block}), 200
 			else:
 				return "", 500
@@ -63,10 +63,10 @@ def send_motion_data():
 		credentials = response["credentials"]
 		if pub_db_mngr.check_participant(credentials["userid"]):
 			pub_db_mngr.add_data_transaction({"device": credentials["userid"], "motion": response["data"]["motion"], "timestamp": response["data"]["timestamp"]}, "motion")
-			block = self.check_status(1)
+			block = pub_db_mngr.check_status(1)
 			if block is not None:
-				block = pending_model_to_dict(block["_id"]["$oid"])
-				self.add_block_to_chain()
+				block = pub_db_mngr.pending_model_to_dict(block["_id"]["$oid"])
+				pub_db_mngr.add_block_to_chain()
 				return jsonify({"block": block}), 200
 			else:
 				return "", 500
