@@ -100,7 +100,7 @@ class PublicBlockchainManager(object):
                     if transaction["action"] == 'register_participant':
                         user_list.append(transaction)
                             
-        if next((item for item in user_list if item['userid'] == participant), None) is not None:
+        if next((item for item in user_list if item['data']['userid'] == participant), None) is not None:
             return True
         return False
     
