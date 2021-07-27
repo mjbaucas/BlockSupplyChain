@@ -218,7 +218,6 @@ class PublicBlockchainManager(object):
 
     def generate_proof_of_work(self, id):
         block = self.pending_model_to_dict(id)
-        print(block)
         computed_hash = self.compute_hash(block)
         while not computed_hash.startswith('0' * self.difficulty):
             block["nonce"] += 1
@@ -241,6 +240,7 @@ class PublicBlockchainManager(object):
             temp_block["nonce"] = block["nonce"]
             temp_block["transactions"] = block["transactions"]
             temp_block["current_level"] = block["current_level"]
+            temp_block = json.loads(json.dumps(temp_block, default=str))
             return temp_block
         return None
     
