@@ -62,7 +62,7 @@ try:
                 print('average:' + str(float(total/counter)))
                 break
         except Exception as e:
-            #print(e) # Uncomment for debugging  
+            print(e) # Uncomment for debugging  
             pass
         #time.sleep(2)
 except KeyboardInterrupt:
