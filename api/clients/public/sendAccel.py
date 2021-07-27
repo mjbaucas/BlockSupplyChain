@@ -7,12 +7,13 @@ import sys
 import hashlib
 
 # Hardware specific
-import RPi.GPIO as GPIO
-from mfrc522 import SimpleMFRC522
+import board
+import adafruit_adxl34x
 
-reader = SimpleMFRC522()
+i2c = board.I2C()
+accelerometer = adafruit_adxl34x.ADXL345(i2c)
 
-device_id = "test_rfid_device_01"
+device_id = "test_accel_device_01"
 blockchain_key = None
 difficulty = 0
 
@@ -21,7 +22,7 @@ time_limit = 300
 
 register_participant_url = 'http://' + sys.argv[1] + ':3000/public/participant/register'
 proof_of_work_url = 'http://' + sys.argv[1] + ':3000/public/participant/proof'
-send_data_url = 'http://' + sys.argv[1] + ':3000/public/rfid-data/send'
+send_data_url = 'http://' + sys.argv[1] + ':3000/public/accel-data/send'
 
 total = 0
 counter = 0
@@ -39,12 +40,13 @@ while blockchain_key is None and not enabled:
         enabled = True
 
 try:
-    while True:
+    while True: 
         try:
-            tag, text = reader.read()
+            axis_data = accelerometer.acceleration
+            print("X: " + str(axis_data[0]) + " Y: " + str(axis_data[1]) + " Z: " + str(axis_data[2]))
             timestamp = datetime.now().timestamp()
-            packet = {"credentials":{"userid": blockchain_key}, "data": {"tag": tag, "timestamp": timestamp}}
-            temp_value = requests.post(send_data_url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key' : ''})
+            packet = {"credentials":{"userid": device_id, "password": password}, "data": {"x": axis_data[0], "y": axis_data[1], "z": axis_data[2], "timestamp": timestamp}}
+            temp_value = requests.post(url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key': ''})
             if temp_value.status_code == 200:
                 data = temp_value.json()
                 block = data["block"]
@@ -62,12 +64,9 @@ try:
                 print('average:' + str(float(total/counter)))
                 break
         except Exception as e:
-            print(e) # Uncomment for debugging  
+            #print(e) # Uncomment for debugging  
             pass
         #time.sleep(2)
 except KeyboardInterrupt:
     print('average:' + str(float(total/counter)))
     pass
-
-GPIO.cleanup()
-

@@ -8,11 +8,12 @@ import hashlib
 
 # Hardware specific
 import RPi.GPIO as GPIO
-from mfrc522 import SimpleMFRC522
 
-reader = SimpleMFRC522()
+GPIO.setmode(GPIO.BCM)
+PIR_PIN = 4
+GPIO.setup(PIR_PIN, GPIO.IN)
 
-device_id = "test_rfid_device_01"
+device_id = "test_motion_device_01"
 blockchain_key = None
 difficulty = 0
 
@@ -21,7 +22,7 @@ time_limit = 300
 
 register_participant_url = 'http://' + sys.argv[1] + ':3000/public/participant/register'
 proof_of_work_url = 'http://' + sys.argv[1] + ':3000/public/participant/proof'
-send_data_url = 'http://' + sys.argv[1] + ':3000/public/rfid-data/send'
+send_data_url = 'http://' + sys.argv[1] + ':3000/public/motion-data/send'
 
 total = 0
 counter = 0
@@ -39,12 +40,13 @@ while blockchain_key is None and not enabled:
         enabled = True
 
 try:
-    while True:
+    while True: 
         try:
-            tag, text = reader.read()
+            motion = 1 if GPIO.input(PIR_PIN) else 0
+            print(motion)
             timestamp = datetime.now().timestamp()
-            packet = {"credentials":{"userid": blockchain_key}, "data": {"tag": tag, "timestamp": timestamp}}
-            temp_value = requests.post(send_data_url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key' : ''})
+            packet = {"credentials":{"userid": device_id, "password": password}, "data": {"motion": motion, "timestamp": timestamp}}
+            temp_value = requests.post(url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key': ''})
             if temp_value.status_code == 200:
                 data = temp_value.json()
                 block = data["block"]
@@ -62,12 +64,9 @@ try:
                 print('average:' + str(float(total/counter)))
                 break
         except Exception as e:
-            print(e) # Uncomment for debugging  
+            #print(e) # Uncomment for debugging  
             pass
         #time.sleep(2)
 except KeyboardInterrupt:
     print('average:' + str(float(total/counter)))
     pass
-
-GPIO.cleanup()
-
