@@ -138,7 +138,7 @@ class PublicBlockchainManager(object):
         temp_db.transactions = transactions
         temp_db.current_level = self.public_db.objects.count() + 1
         temp_db.locked = False
-        temp_db.participants = 0
+        temp_db.votes = 0
         temp_db.save()
 
     def add_participant(self, participant):

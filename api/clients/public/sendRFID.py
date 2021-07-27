@@ -4,6 +4,7 @@ import json
 from datetime import datetime
 import time
 import sys
+import hashlib
 
 # Hardware specific
 import RPi.GPIO as GPIO
@@ -13,6 +14,7 @@ reader = SimpleMFRC522()
 
 device_id = "test_rfid_device_01"
 blockchain_key = None
+difficulty = 0
 
 global_start = time.time()
 time_limit = 300
@@ -25,12 +27,15 @@ send_data_url = 'http://' + sys.argv[1] + ':3000/public/rfid-data/send'
 total = 0
 counter = 0
 
+def compute_hash(self, block):
+    block_string = json.dumps(block, indent=4, sort_keys=True, default=str)
+    return hashlib.sha256(block_string.encode()).hexdigest()
+
 enabled = False
 while blockchain_key is None and not enabled:
     packet = {"userid": device_id}
     temp_value = requests.post(register_participant_url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key' : ''})
     if temp_value.status_code == 200:
-        
         blockchain_key = temp_value.json()["hashed_key"]
         enabled = True
 
@@ -44,7 +49,7 @@ try:
             if temp_value.status_code == 200 and temp_value.json() is not None and "block" in temp_value.json():
                 block = temp_value.json()["block"]
                 computed_hash = self.compute_hash(block)
-                while not computed_hash.startswith('0' * self.difficulty):
+                while not computed_hash.startswith('0' * temp_value.json()["difficulty"]):
                     block["nonce"] += 1
                     computed_hash = self.compute_hash(block)
                 packet = {"credentials":{"userid": device_id}, "data": {"proof_of_work": computed_hash, "block_id": block["_id"]["$oid"]}}

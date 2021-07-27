@@ -35,7 +35,7 @@ def send_th_data():
 			if block is not None:
 				block = pending_model_to_dict(block["_id"]["$oid"])
 				self.add_block_to_chain()
-				return jsonify({"block": block}), 200
+				return jsonify({"block": block, "difficulty": pub_db_mngr.difficulty}), 200
 			else:
 				return "", 500
 	return "", 500 
