@@ -47,12 +47,13 @@ try:
             packet = {"credentials":{"userid": blockchain_key}, "data": {"tag": tag, "timestamp": timestamp}}
             temp_value = requests.post(send_data_url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key' : ''})
             if temp_value.status_code == 200:
-                block = temp_value.json()["block"]
+                data = temp_value.json()
+                block = data["block"]
                 computed_hash = compute_hash(block)
-                while not computed_hash.startswith('0' * temp_value.json()["difficulty"]):
+                while not computed_hash.startswith('0' * data["difficulty"]):
                     block["nonce"] += 1
                     computed_hash = compute_hash(block)
-                packet = {"credentials":{"userid": device_id}, "data": {"proof_of_work": computed_hash, "block_id": block["_id"]["$oid"]}}
+                packet = {"credentials":{"userid": device_id}, "data": {"proof_of_work": computed_hash, "block_id": data["block_id"]}}
                 temp_value_2 = requests.post(proof_of_work_url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key' : ''})
             elapsed = temp_value.elapsed.total_seconds()
             total+= elapsed

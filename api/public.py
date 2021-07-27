@@ -19,7 +19,7 @@ def send_rfid_data():
 			if block is not None:
 				block = pub_db_mngr.pending_model_to_dict(block["_id"]["$oid"])
 				pub_db_mngr.add_block_to_chain()
-				return jsonify({"block": block, "difficulty": pub_db_mngr.difficulty}), 200
+				return jsonify({"block": block, "difficulty": pub_db_mngr.difficulty, "block_id": block["_id"]["$oid"]}), 200
 			else:
 				return "", 300
 	return "", 500
@@ -35,7 +35,7 @@ def send_th_data():
 			if block is not None:
 				block = pub_db_mngr.pending_model_to_dict(block["_id"]["$oid"])
 				pub_db_mngr.add_block_to_chain()
-				return jsonify({"block": block, "difficulty": pub_db_mngr.difficulty}), 200
+				return jsonify({"block": block, "difficulty": pub_db_mngr.difficulty, "block_id": block["_id"]["$oid"]}), 200
 			else:
 				return "", 300
 	return "", 500 
@@ -51,7 +51,7 @@ def send_accel_data():
 			if block is not None:
 				block = pub_db_mngr.pending_model_to_dict(block["_id"]["$oid"])
 				pub_db_mngr.add_block_to_chain()
-				return jsonify({"block": block, "difficulty": pub_db_mngr.difficulty}), 200
+				return jsonify({"block": block, "difficulty": pub_db_mngr.difficulty, "block_id": block["_id"]["$oid"]}), 200
 			else:
 				return "", 300
 	return "", 500 
@@ -67,7 +67,7 @@ def send_motion_data():
 			if block is not None:
 				block = pub_db_mngr.pending_model_to_dict(block["_id"]["$oid"])
 				pub_db_mngr.add_block_to_chain()
-				return jsonify({"block": block, "difficulty": pub_db_mngr.difficulty}), 200
+				return jsonify({"block": block, "difficulty": pub_db_mngr.difficulty, "block_id": block["_id"]["$oid"]}), 200
 			else:
 				return "", 300
 	return "", 500 
