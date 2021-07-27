@@ -27,7 +27,7 @@ send_data_url = 'http://' + sys.argv[1] + ':3000/public/rfid-data/send'
 total = 0
 counter = 0
 
-def compute_hash(self, block):
+def compute_hash(block):
     block_string = json.dumps(block, indent=4, sort_keys=True, default=str)
     return hashlib.sha256(block_string.encode()).hexdigest()
 
