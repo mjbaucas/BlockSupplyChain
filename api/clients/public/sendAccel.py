@@ -46,7 +46,7 @@ try:
             print("X: " + str(axis_data[0]) + " Y: " + str(axis_data[1]) + " Z: " + str(axis_data[2]))
             timestamp = datetime.now().timestamp()
             packet = {"credentials":{"userid": blockchain_key}, "data": {"x": axis_data[0], "y": axis_data[1], "z": axis_data[2], "timestamp": timestamp}}
-            temp_value = requests.post(url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key': ''})
+            temp_value = requests.post(send_data_url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key': ''})
             if temp_value.status_code == 200:
                 data = temp_value.json()
                 block = data["block"]

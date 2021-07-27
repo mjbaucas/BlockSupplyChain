@@ -46,7 +46,7 @@ try:
                 print("Humidity: " + str(humidity) + " Temp: " + str(temperature))
                 timestamp = datetime.now().timestamp()
                 packet = {"credentials":{"userid": blockchain_key}, "data": {"humidity": humidity, "temperature": temperature, "timestamp": timestamp}}
-                temp_value = requests.post(url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key': ''})
+                temp_value = requests.post(send_data_url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key': ''})
                 if temp_value.status_code == 200:
                     data = temp_value.json()
                     block = data["block"]
@@ -64,7 +64,7 @@ try:
                     print('average:' + str(float(total/counter)))
                     break
         except Exception as e:
-            print(e) # Uncomment for debugging  
+            #print(e) # Uncomment for debugging  
             pass
         #time.sleep(2)
 except KeyboardInterrupt:
