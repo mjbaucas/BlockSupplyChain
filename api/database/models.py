@@ -27,6 +27,21 @@ class PrivateBlockData(db.Document):
     previous_hash = db.StringField(required=True, unique=True)
     timestamp = db.ComplexDateTimeField(required=True)
     nonce = db.IntField(required=True)
-    transactions = db.ListField(field=db.StringField())
+    transactions = db.ListField(required=True, field=db.StringField())
+    current_level = db.IntField(required=True)
+
+class PublicBlockData(db.Document):
+    previous_hash = db.StringField(required=True)
+    timestamp = db.ComplexDateTimeField(required=True)
+    nonce = db.IntField(required=True)
+    transactions = db.ListField(required=True, field=db.StringField())
     current_level = db.IntField(required=True)
     
+class PendingPublicBlockData(db.Document):
+    previous_hash = db.StringField(required=True)
+    timestamp = db.ComplexDateTimeField(required=True)
+    nonce = db.IntField(required=True)
+    transactions = db.ListField(required=True, field=db.StringField())
+    current_level = db.IntField(required=True)
+    locked = db.BooleanField(required=True)
+    votes = db.IntField(required=True)

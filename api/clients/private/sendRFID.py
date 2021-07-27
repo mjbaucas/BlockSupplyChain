@@ -1,33 +1,36 @@
+# General imports
 import requests
 import json
 from datetime import datetime
 import time
 import sys
+
+# Hardware specific
 import RPi.GPIO as GPIO
+from mfrc522 import SimpleMFRC522
 
-GPIO.setmode(GPIO.BCM)
-PIR_PIN = 4
-GPIO.setup(PIR_PIN, GPIO.IN)
+reader = SimpleMFRC522()
 
-device_id = "test_motion_device_01"
+device_id = "test_rfid_device_01"
 password = "password1234"
 
 global_start = time.time()
 time_limit = 300
 
-url = 'http://' + sys.argv[1] + ':3000/motion-data/send'
+url = 'http://' + sys.argv[1] + ':3000/private/rfid-data/send'
 
 total = 0
 counter = 0
 
 try:
-    while True: 
+    while True:
         try:
-            motion = 1 if GPIO.input(PIR_PIN) else 0
-            print(motion)
+            tag, text = reader.read()
+            #print(id)
+            #print(text)
             timestamp = datetime.now().timestamp()
-            packet = {"credentials":{"userid": device_id, "password": password}, "data": {"motion": motion, "timestamp": timestamp}}
-            temp_value = requests.post(url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key': ''})
+            packet = {"credentials":{"userid": device_id, "password": password}, "data": {"tag": tag, "timestamp": timestamp}}
+            temp_value = requests.post(url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key' : ''})
             elapsed = temp_value.elapsed.total_seconds()
             total+= elapsed
             counter+=1
@@ -42,3 +45,6 @@ try:
 except KeyboardInterrupt:
     print('average:' + str(float(total/counter)))
     pass
+
+GPIO.cleanup()
+

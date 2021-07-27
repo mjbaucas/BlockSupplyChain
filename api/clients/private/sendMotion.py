@@ -1,22 +1,24 @@
+# General imports
 import requests
 import json
 from datetime import datetime
 import time
 import sys
-import board
-import adafruit_adxl34x
 
+# Hardware specific
+import RPi.GPIO as GPIO
 
-i2c = board.I2C()
-accelerometer = adafruit_adxl34x.ADXL345(i2c)
+GPIO.setmode(GPIO.BCM)
+PIR_PIN = 4
+GPIO.setup(PIR_PIN, GPIO.IN)
 
-device_id = "test_accel_device_01"
+device_id = "test_motion_device_01"
 password = "password1234"
 
 global_start = time.time()
 time_limit = 300
 
-url = 'http://' + sys.argv[1] + ':3000/accel-data/send'
+url = 'http://' + sys.argv[1] + ':3000/private/motion-data/send'
 
 total = 0
 counter = 0
@@ -24,10 +26,10 @@ counter = 0
 try:
     while True: 
         try:
-            axis_data = accelerometer.acceleration
-            print("X: " + str(axis_data[0]) + " Y: " + str(axis_data[1]) + " Z: " + str(axis_data[2]))
+            motion = 1 if GPIO.input(PIR_PIN) else 0
+            print(motion)
             timestamp = datetime.now().timestamp()
-            packet = {"credentials":{"userid": device_id, "password": password}, "data": {"x": axis_data[0], "y": axis_data[1], "z": axis_data[2], "timestamp": timestamp}}
+            packet = {"credentials":{"userid": device_id, "password": password}, "data": {"motion": motion, "timestamp": timestamp}}
             temp_value = requests.post(url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key': ''})
             elapsed = temp_value.elapsed.total_seconds()
             total+= elapsed

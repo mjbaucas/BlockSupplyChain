@@ -1,8 +1,11 @@
+# General imports
 import requests
 import json
 from datetime import datetime
 import time
 import sys
+
+# Hardware specific
 import Adafruit_DHT
 
 sensor = Adafruit_DHT.DHT11
@@ -14,7 +17,7 @@ password = "password1234"
 global_start = time.time()
 time_limit = 300
 
-url = 'http://' + sys.argv[1] + ':3000/temp-humid-data/send'
+url = 'http://' + sys.argv[1] + ':3000/private/temp-humid-data/send'
 
 total = 0
 counter = 0
