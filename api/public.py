@@ -19,7 +19,7 @@ def send_rfid_data():
 			if block is not None:
 				block = pub_db_mngr.pending_model_to_dict(block["_id"]["$oid"])
 				pub_db_mngr.add_block_to_chain()
-				return jsonify({"block": block}), 200
+				return jsonify({"block": block, "difficulty": pub_db_mngr.difficulty}), 200
 			else:
 				return "", 300
 	return "", 500
@@ -37,7 +37,7 @@ def send_th_data():
 				pub_db_mngr.add_block_to_chain()
 				return jsonify({"block": block, "difficulty": pub_db_mngr.difficulty}), 200
 			else:
-				return "", 500
+				return "", 300
 	return "", 500 
 
 @public.route('/accel-data/send', methods=['POST'])
@@ -51,9 +51,9 @@ def send_accel_data():
 			if block is not None:
 				block = pub_db_mngr.pending_model_to_dict(block["_id"]["$oid"])
 				pub_db_mngr.add_block_to_chain()
-				return jsonify({"block": block}), 200
+				return jsonify({"block": block, "difficulty": pub_db_mngr.difficulty}), 200
 			else:
-				return "", 500
+				return "", 300
 	return "", 500 
 
 @public.route('/motion-data/send', methods=['POST'])
@@ -67,9 +67,9 @@ def send_motion_data():
 			if block is not None:
 				block = pub_db_mngr.pending_model_to_dict(block["_id"]["$oid"])
 				pub_db_mngr.add_block_to_chain()
-				return jsonify({"block": block}), 200
+				return jsonify({"block": block, "difficulty": pub_db_mngr.difficulty}), 200
 			else:
-				return "", 500
+				return "", 300
 	return "", 500 
 
 @public.route('/participant/register', methods=['POST'])
