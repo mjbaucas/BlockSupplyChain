@@ -26,7 +26,7 @@ total = 0
 counter = 0
 
 enabled = False
-while blockchain_key is None and enabled is True:
+while blockchain_key is None and not enabled:
     packet = {"credentials":{"userid": device_id}}
     temp_value = requests.post(register_participant_url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key' : ''})
     if temp_value.status_code == 200:
