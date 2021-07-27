@@ -226,6 +226,7 @@ class PublicBlockchainManager(object):
         return computed_hash
 
     def verify_proof_of_work(self, id, proof):
+        print(self.pending_model_to_dict(id) == proof)
         return proof == self.generate_proof_of_work(id)
     
     def compute_hash(self, block):

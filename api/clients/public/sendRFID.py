@@ -54,7 +54,7 @@ try:
                 while not computed_hash.startswith('0' * data["difficulty"]):
                     block["nonce"] += 1
                     computed_hash = compute_hash(block)
-                packet = {"credentials":{"userid": blockchain_key}, "data": {"proof_of_work": computed_hash, "block_id": data["block_id"]}}
+                packet = {"credentials":{"userid": blockchain_key}, "data": {"proof_of_work": block, "block_id": data["block_id"]}}
                 temp_value_2 = requests.post(proof_of_work_url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key' : ''})
             elapsed = temp_value.elapsed.total_seconds()
             total+= elapsed
