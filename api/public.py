@@ -17,9 +17,9 @@ def send_rfid_data():
 			pub_db_mngr.add_data_transaction({"device": credentials["userid"], "tag": str(response["data"]["tag"]), "timestamp": response["data"]["timestamp"]}, "rfid")
 			block = pub_db_mngr.check_status(1)
 			if block is not None:
-				block = pub_db_mngr.pending_model_to_dict(block["_id"]["$oid"])
+				block_dict = pub_db_mngr.pending_model_to_dict(block["_id"]["$oid"])
 				pub_db_mngr.add_block_to_chain()
-				return jsonify({"block": block, "difficulty": pub_db_mngr.difficulty, "block_id": block["_id"]["$oid"]}), 200
+				return jsonify({"block": block_dict, "difficulty": pub_db_mngr.difficulty, "block_id": block["_id"]["$oid"]}), 200
 			else:
 				return "", 300
 	return "", 500
@@ -88,8 +88,9 @@ def recieve_proof():
 		credentials = response["credentials"]
 		if pub_db_mngr.check_participant(credentials["userid"]):
 			if pub_db_mngr.verify_proof_of_work(response["data"]["block_id"], response["data"]["proof"]):
-				pub_db_mngr.vote_to_add_block(id = temp["_id"]["$oid"])
+				pub_db_mngr.vote_to_add_block(id = response["data"]["block_id"])
 			return "", 200
+		return "", 300
 	return "", 500
 
 @public.route('/', methods=['GET'])

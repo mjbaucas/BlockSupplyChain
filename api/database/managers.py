@@ -99,7 +99,7 @@ class PublicBlockchainManager(object):
                     transaction = json.loads(transaction)
                     if transaction["action"] == 'register_participant':
                         user_list.append(transaction)
-                            
+
         if next((item for item in user_list if item['data']['key'] == participant), None) is not None:
             return True
         return False
@@ -184,9 +184,8 @@ class PublicBlockchainManager(object):
             block = self.pending_db.objects.get(id = temp["_id"]["$oid"])
             block.locked = True
             block.save()
-            block.delete()
-            
-            if temp["votes"] >= self.count_participants()/2:
+
+            if temp["votes"] >= self.count_participants()/2:  
                 temp_db = self.public_db()
                 temp_db.previous_hash =  temp["previous_hash"]
                 temp_db.timestamp =  temp["timestamp"]
@@ -194,6 +193,7 @@ class PublicBlockchainManager(object):
                 temp_db.transactions = temp["transactions"]
                 temp_db.current_level =  temp["current_level"]
                 temp_db.save()
+                block.delete()
 
     def __generate_hash(self, input, mode=None):
         hash = hashlib.md5()
