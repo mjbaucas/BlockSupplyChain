@@ -30,7 +30,7 @@ while blockchain_key is None and not enabled:
     packet = {"userid": device_id}
     temp_value = requests.post(register_participant_url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key' : ''})
     if temp_value.status_code == 200:
-        print(temp_value.json)
+        print(temp_value.json())
         #blockchain_key = temp_value.json["hashed_key"]
         enabled = True
 
@@ -41,7 +41,7 @@ try:
             timestamp = datetime.now().timestamp()
             packet = {"credentials":{"userid": blockchain_key}, "data": {"tag": tag, "timestamp": timestamp}}
             temp_value = requests.post(send_data_url, json=json.dumps(packet), headers={'Content-Type': 'application/json', 'X-Api-Key' : ''})
-            if temp_value.status_code == 200 and temp_value.json is not None and "block" in temp_value.json:
+            if temp_value.status_code == 200 and temp_value.json() is not None and "block" in temp_value.json():
                 block = temp_value.json["block"]
                 computed_hash = self.compute_hash(block)
                 while not computed_hash.startswith('0' * self.difficulty):
