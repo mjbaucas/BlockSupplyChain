@@ -182,7 +182,7 @@ class PublicBlockchainManager(object):
 
     def add_block_to_chain(self):
         temp = self.check_status(1)
-        if temp is not None and temp["locked"] == False and temp["votes"] >= self.count_participants()/2:
+        if temp is not None and temp["locked"] == False and temp["votes"] > self.count_participants()/2:
             block = self.pending_db.objects.get(id = temp["_id"]["$oid"])
             block.locked = True
             block.save()
@@ -212,11 +212,14 @@ class PublicBlockchainManager(object):
         while True:
             if counter < self.pending_db.objects.count(): 
                 temp_block = json.loads(self.pending_db.objects().order_by('_id').to_json())[counter]
-                if len(temp_block["transactions"]) < self.max and mode == 0:
-                    return temp_block
-                elif  len(temp_block["transactions"]) == self.max and mode == 1:
-                    return temp_block
-                counter+=1
+                if temp_block is not None:
+                    if len(temp_block["transactions"]) < self.max and mode == 0:
+                        return temp_block
+                    elif  len(temp_block["transactions"]) == self.max and mode == 1:
+                        return temp_block
+                    counter+=1
+                else:
+                    return block
             else:
                 return block
 
@@ -264,7 +267,7 @@ class PublicBlockchainManager(object):
 
     def vote_to_add_block(self, id):
         block = self.pending_db.objects.get(id = id)
-        if block is not None:
+        if block is not None and block.locked is False:
             block.votes += 1
             block.save()
 
@@ -293,7 +296,7 @@ class PublicBlockchainManager(object):
             data.save()
         elif transaction["action"] == "add_motion_data":
             data = MotionData()
-            data.device = transaction["data]"]["device"]
+            data.device = transaction["data"]["device"]
             data.motion = transaction["data"]["motion"]
             data.timestamp = datetime.fromtimestamp(transaction["data"]["timestamp"])
             data.save()

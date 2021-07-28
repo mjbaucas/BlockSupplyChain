@@ -33,9 +33,9 @@ def send_th_data():
 			pub_db_mngr.add_data_transaction({"device": credentials["userid"], "temperature": response["data"]["temperature"], "humidity": response["data"]["humidity"], "timestamp": response["data"]["timestamp"]}, "temp_humid")
 			block = pub_db_mngr.check_status(1)
 			if block is not None:
-				block = pub_db_mngr.pending_model_to_dict(block["_id"]["$oid"])
+				block_dict = pub_db_mngr.pending_model_to_dict(block["_id"]["$oid"])
 				pub_db_mngr.add_block_to_chain()
-				return jsonify({"block": block, "difficulty": pub_db_mngr.difficulty, "block_id": block["_id"]["$oid"]}), 200
+				return jsonify({"block": block_dict, "difficulty": pub_db_mngr.difficulty, "block_id": block["_id"]["$oid"]}), 200
 			else:
 				return "", 300
 	return "", 500 
@@ -49,9 +49,9 @@ def send_accel_data():
 			pub_db_mngr.add_data_transaction({"device": credentials["userid"], "x": response["data"]["x"], "y": response["data"]["y"], "z": response["data"]["z"], "timestamp": response["data"]["timestamp"]}, "accel")
 			block = pub_db_mngr.check_status(1)
 			if block is not None:
-				block = pub_db_mngr.pending_model_to_dict(block["_id"]["$oid"])
+				block_dict = pub_db_mngr.pending_model_to_dict(block["_id"]["$oid"])
 				pub_db_mngr.add_block_to_chain()
-				return jsonify({"block": block, "difficulty": pub_db_mngr.difficulty, "block_id": block["_id"]["$oid"]}), 200
+				return jsonify({"block": block_dict, "difficulty": pub_db_mngr.difficulty, "block_id": block["_id"]["$oid"]}), 200
 			else:
 				return "", 300
 	return "", 500 
@@ -65,9 +65,9 @@ def send_motion_data():
 			pub_db_mngr.add_data_transaction({"device": credentials["userid"], "motion": response["data"]["motion"], "timestamp": response["data"]["timestamp"]}, "motion")
 			block = pub_db_mngr.check_status(1)
 			if block is not None:
-				block = pub_db_mngr.pending_model_to_dict(block["_id"]["$oid"])
+				block_dict = pub_db_mngr.pending_model_to_dict(block["_id"]["$oid"])
 				pub_db_mngr.add_block_to_chain()
-				return jsonify({"block": block, "difficulty": pub_db_mngr.difficulty, "block_id": block["_id"]["$oid"]}), 200
+				return jsonify({"block": block_dict, "difficulty": pub_db_mngr.difficulty, "block_id": block["_id"]["$oid"]}), 200
 			else:
 				return "", 300
 	return "", 500 
